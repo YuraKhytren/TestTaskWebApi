@@ -36,12 +36,12 @@ namespace TestTask.Services
 
         public async Task<IEnumerable<Contact>> GetAllAsync()
         {
-            return await _db.Contacts.ToListAsync();
+            return await _db.Contacts.Include(a => a.Account).ThenInclude(i => i.Incident).ToListAsync();
         }
 
         public async Task<Contact> GetByIdAsync(string email)
         {
-            Contact model = await _db.Contacts.FirstOrDefaultAsync(m => m.Email == email);
+            Contact model = await _db.Contacts.Include(a => a.Account).ThenInclude(i => i.Incident).FirstOrDefaultAsync(m => m.Email == email);
 
             if (model == null)
             {

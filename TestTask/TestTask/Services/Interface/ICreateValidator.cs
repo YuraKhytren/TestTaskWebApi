@@ -2,6 +2,6 @@
 {
     public interface ICreateValidator<T>
     {
-        bool ValidateCreate(T model);
+        bool CanCreate(T model);
     }
 }

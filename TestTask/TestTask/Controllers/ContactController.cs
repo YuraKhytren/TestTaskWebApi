@@ -26,7 +26,7 @@ namespace TestTask.Controllers
             return _mapper.Map<IEnumerable<ContactViewModel>>(await _service.GetAllAsync());
         }
 
-        [HttpGet("email")]
+        [HttpGet("id")]
         public async Task<ActionResult<ContactViewModel>> GetByIdAsync(string email)
         {
             Contact model = await _service.GetByIdAsync(email);
@@ -50,6 +50,28 @@ namespace TestTask.Controllers
             return Ok(_mapper.Map<ContactViewModel>(await _service.CreateAsync(_mapper.Map<Contact>(model))));
         }
 
+        [HttpPost("email")]
+        public async Task<ActionResult<Contact>> CreateAsync(ContactDTO model)
+        {
+            if (model.AccountName == null || model.AccountName == string.Empty)
+            {
+                return NotFound();
+            }
+            Contact contact = await _service.GetByIdAsync(model.Email);
+
+            if (contact != null)
+            {
+                return await _service.UpdateAsync(_mapper.Map<Contact>(model));
+            }
+            else
+            {
+                contact = await _service.CreateAsync(_mapper.Map<Contact>(model));
+                Incident incident = new Incident() { Description = model.IncidentDescription };
+                contact.Account.Incident = incident;
+            }
+
+            return Ok(contact);
+        }
 
 
         [HttpPut]

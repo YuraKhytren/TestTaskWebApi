@@ -15,7 +15,7 @@ namespace TestTask.Services
 
         public async Task<Account> CreateAsync(Account model)
         {
-            if (model != null && ValidateCreate(model) == true)
+            if (model != null && CanCreate(model) == true)
             {
                 _db.Accounts.Add(model);
                 await _db.SaveChangesAsync();
@@ -38,12 +38,12 @@ namespace TestTask.Services
 
         public async Task<IEnumerable<Account>> GetAllAsync()
         {
-            return await _db.Accounts.ToListAsync();
+            return await _db.Accounts.Include(i => i.Incident).Include(c=>c.Contacts).ToListAsync();
         }
 
         public async Task<Account> GetByIdAsync(string id)
         {
-            Account model = await _db.Accounts.FirstOrDefaultAsync(m => m.Id == id);
+            Account model = await _db.Accounts.Include(i => i.Incident).Include(c => c.Contacts).FirstOrDefaultAsync(m => m.Id == id);
 
             if (model == null)
             {
@@ -64,7 +64,7 @@ namespace TestTask.Services
             return model;
         }
 
-        public bool ValidateCreate(Account model)
+        public bool CanCreate(Account model)
         {
             if (model.Contacts.Count == 0)
             {
