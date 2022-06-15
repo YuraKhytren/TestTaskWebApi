@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TestTask.DTO;
+using TestTask.Models;
+using TestTask.Services.Interface;
+using TestTask.ViewModel;
 
 namespace TestTask.Controllers
 {
@@ -7,5 +12,66 @@ namespace TestTask.Controllers
     [ApiController]
     public class ContactController : ControllerBase
     {
+        private readonly ICrudService<Contact> _service;
+        private readonly IMapper _mapper;
+        public ContactController(ICrudService<Contact> service, IMapper mapper)
+        {
+            _mapper = mapper;
+            _service = service;
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<ContactViewModel>> GetAllAsync()
+        {
+            return _mapper.Map<IEnumerable<ContactViewModel>>(await _service.GetAllAsync());
+        }
+
+        [HttpGet("email")]
+        public async Task<ActionResult<ContactViewModel>> GetByIdAsync(string email)
+        {
+            Contact model = await _service.GetByIdAsync(email);
+
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
+            return new ObjectResult(_mapper.Map<ContactViewModel>(model));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ContactViewModel>> CreateAsync(ContactViewModel model)
+        {
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(_mapper.Map<ContactViewModel>(await _service.CreateAsync(_mapper.Map<Contact>(model))));
+        }
+
+
+
+        [HttpPut]
+        public async Task<ActionResult<ContactViewModel>> UpdateAsync(ContactViewModel model)
+        {
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(_mapper.Map<ContactViewModel>(await _service.UpdateAsync(_mapper.Map<Contact>(model))));
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteAsync(string id)
+        {
+            if (id == default)
+            {
+                return NotFound();
+            }
+
+            return Ok(await _service.DeleteAsync(id));
+        }
     }
 }

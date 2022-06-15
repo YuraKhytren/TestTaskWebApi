@@ -52,7 +52,23 @@ namespace TestTask.Controllers
         [HttpPut]
         public async Task<ActionResult<IncidentViewModel>> UpdateAsync(IncidentViewModel model)
         {
+            if (model == null)
+            {
+                return BadRequest();
+            }
 
+            return Ok(_mapper.Map<IncidentViewModel>(await _service.UpdateAsync(_mapper.Map<Incident>(model))));
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteAsync(string id) 
+        {
+            if (id == default)
+            {
+                return NotFound();
+            }
+
+            return Ok(await _service.DeleteAsync(id));
         }
     }
 }

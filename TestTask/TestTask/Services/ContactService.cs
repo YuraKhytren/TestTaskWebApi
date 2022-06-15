@@ -39,9 +39,9 @@ namespace TestTask.Services
             return await _db.Contacts.ToListAsync();
         }
 
-        public async Task<Contact> GetByIdAsync(string id)
+        public async Task<Contact> GetByIdAsync(string email)
         {
-            Contact model = await _db.Contacts.FirstOrDefaultAsync(m => m.Id == id);
+            Contact model = await _db.Contacts.FirstOrDefaultAsync(m => m.Email == email);
 
             if (model == null)
             {

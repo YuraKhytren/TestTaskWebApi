@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<ICrudService<Account>, AccountService>();
 builder.Services.AddTransient<ICrudService<Contact>, ContactService>();
 builder.Services.AddTransient<ICrudService<Incident>, IncidentService>();
-builder.Services.AddAutoMapper(typeof(Program), typeof(AccountToAccountViewModelProfile), typeof(ContactToContactViewModelProfile), typeof(IncidentToIncidentViewModelProfile));
+builder.Services.AddAutoMapper(typeof(Program), typeof(AccountToAccountViewModelProfile), typeof(ContactToContactViewModelProfile), typeof(IncidentToIncidentViewModelProfile),typeof(ContactToContactDTOProfile));
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

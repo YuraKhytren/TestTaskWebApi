@@ -5,7 +5,7 @@ using TestTask.Services.Interface;
 
 namespace TestTask.Services
 {
-    public class IncidentService : ICrudService<Incident>
+    public class IncidentService : ICrudService<Incident>, ICreateValidator<Incident>
     {
         private readonly AppDbContext _db;
         public IncidentService(AppDbContext appDbContext)
@@ -15,7 +15,7 @@ namespace TestTask.Services
 
         public async Task<Incident> CreateAsync(Incident model)
         {
-            if (model != null)
+            if (model != null && ValidateCreate(model) == true)
             {
                 _db.Incidents.Add(model);
                 await _db.SaveChangesAsync();
@@ -62,6 +62,16 @@ namespace TestTask.Services
 
             }
             return model;
+        }
+
+        public bool ValidateCreate(Incident model)
+        {
+            if (model.Accounts.Count == 0)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
